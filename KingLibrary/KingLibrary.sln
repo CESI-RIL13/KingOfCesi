@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.22823.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KingLibrary", "KingLibrary.csproj", "{D62856B2-B7BA-47C7-A39B-A6850E98DF3E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KingOfCesi", "..\KingApplication\KingOfCesi.csproj", "{5CEFFA7D-3088-4BA7-BD27-F54C91753615}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D62856B2-B7BA-47C7-A39B-A6850E98DF3E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D62856B2-B7BA-47C7-A39B-A6850E98DF3E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D62856B2-B7BA-47C7-A39B-A6850E98DF3E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D62856B2-B7BA-47C7-A39B-A6850E98DF3E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5CEFFA7D-3088-4BA7-BD27-F54C91753615}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5CEFFA7D-3088-4BA7-BD27-F54C91753615}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5CEFFA7D-3088-4BA7-BD27-F54C91753615}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5CEFFA7D-3088-4BA7-BD27-F54C91753615}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

@@ -1,0 +1,62 @@
+﻿@using Microsoft.AspNet.Identity
+
+@{
+    ViewBag.Title = "Loading";
+}
+
+@section scripts{
+    @*/* load your scripts here. You can exclude jQuery,
+        coz it's already in the template */ *@
+<script language="javascript" type="text/javascript">
+    (function($) {
+
+        //console.log($.connection);
+        var gameHubClient = $.connection.gameHub;
+        
+
+
+    // Send a new message to the server
+    //$("#sendmessage").click(function () {
+    //    var message = $('#textmessage').val();
+    //    chathubclient.sendmessage(message);
+    //    $('#textmessage').val("");
+    //});
+        console.log(gameHubClient);
+    // Start the connection
+
+
+    // Receive a new message from the server
+    //chatHubClient.newMessage = function (message) {
+    //    message = $("#chatWindow").html() + "<br />" + message;
+    //    $("#chatWindow").html(message);
+    //};
+
+    // Receive the new active userlist
+    gameHubClient.client.userList = function (message) {
+        //message = JSON.parse(message);
+        //var options;
+        console.log(message)
+        //$.each(message, function (index) {
+        //    options += '<option value="' + message[index].Name + '">' + message[index].Name + '</option>';
+        //});
+        //$("select#users").html(options);
+    };
+
+    gameHubClient.client.userCount = function (count) {
+        $("#userCount").html(count);
+    }
+
+    gameHubClient.client.redirectToGame = function (url) {
+        window.location.href = url;
+    }
+
+    $.connection.hub.start(function () {
+        gameHubClient.server.join('@User.Identity.GetUserName()');
+    });
+
+    })(jQuery);
+</script>
+}
+
+<h2>Loading...</h2>
+<p><span id="userCount">0</span>/6</p>

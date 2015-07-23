@@ -1,0 +1,12 @@
+C:\Users\Julien\Dropbox\RIL_13\KingOfCesi\KingLibrary\bin\Debug\KingLibrary.dll.config
+C:\Users\Julien\Dropbox\RIL_13\KingOfCesi\KingLibrary\bin\Debug\KingLibrary.dll
+C:\Users\Julien\Dropbox\RIL_13\KingOfCesi\KingLibrary\bin\Debug\KingLibrary.pdb
+C:\Users\Julien\Dropbox\RIL_13\KingOfCesi\KingLibrary\bin\Debug\EntityFramework.dll
+C:\Users\Julien\Dropbox\RIL_13\KingOfCesi\KingLibrary\bin\Debug\EntityFramework.SqlServer.dll
+C:\Users\Julien\Dropbox\RIL_13\KingOfCesi\KingLibrary\bin\Debug\EntityFramework.xml
+C:\Users\Julien\Dropbox\RIL_13\KingOfCesi\KingLibrary\bin\Debug\EntityFramework.SqlServer.xml
+C:\Users\Julien\Dropbox\RIL_13\KingOfCesi\KingLibrary\obj\Debug\KingLibrary.csprojResolveAssemblyReference.cache
+C:\Users\Julien\Dropbox\RIL_13\KingOfCesi\KingLibrary\obj\Debug\KingLibrary.dll
+C:\Users\Julien\Dropbox\RIL_13\KingOfCesi\KingLibrary\obj\Debug\KingLibrary.pdb
+C:\Users\Julien\Dropbox\RIL_13\KingOfCesi\KingLibrary\obj\Debug\KingLibrary.Migrations.GenerationBDD.resources
+C:\Users\Julien\Dropbox\RIL_13\KingOfCesi\KingLibrary\obj\Debug\KingLibrary.csproj.GenerateResource.Cache

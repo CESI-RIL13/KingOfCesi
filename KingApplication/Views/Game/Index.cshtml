@@ -1,0 +1,22 @@
+﻿@using Microsoft.AspNet.Identity
+
+@{
+    ViewBag.Title = "Index";
+}
+@section scripts{
+    @*/* load your scripts here. You can exclude jQuery,
+        coz it's already in the template */ *@
+    <script language="javascript" type="text/javascript">
+    (function($) {
+
+        //console.log($.connection);
+        var gameHubClient = $.connection.gameHub;
+
+        $.connection.hub.start(function () {
+            gameHubClient.server.join('@User.Identity.GetUserName()');
+        });
+    })(jQuery);
+    </script>
+}
+<h2>Index</h2>
+
