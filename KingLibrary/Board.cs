@@ -8,25 +8,16 @@ namespace KingLibrary
 {
     public class Board
     {
-        public static int NbRound { get; set; }
-        public static List<Player> Players { get; set; }
-        public static Player CurentPlayer { get; set; }
-        public static Dictionary<EventEnum, List<Card>> Observers { get; set; }
-        private readonly static Lazy<Board> _instance = new Lazy<Board>(() => new Board());
+        public int NbRound { get; set; }
+        public List<Player> Players { get; set; }
+        public Player CurentPlayer { get; set; }
+        public Dictionary<EventEnum, List<Card>> Observers { get; set; }
 
         public Board()
         {
             NbRound = 0;
             Players = new List<Player>();
             Observers = new Dictionary<EventEnum, List<Card>>();
-        }
-
-        public static Board Instance
-        {
-            get
-            {
-                return _instance.Value;
-            }
         }
 
         /// <summary>

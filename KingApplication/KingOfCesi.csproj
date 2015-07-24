@@ -185,6 +185,9 @@
   <ItemGroup>
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Content\ClientViews\board.html" />
+    <Content Include="Content\ClientViews\actions.html" />
+    <Content Include="Content\ClientViews\loading.html" />
     <Content Include="Content\ClientViews\playersList.html" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />

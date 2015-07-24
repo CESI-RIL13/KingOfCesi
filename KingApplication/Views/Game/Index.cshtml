@@ -6,31 +6,45 @@
 @section scripts{
     
     <script language="javascript" type="text/javascript">
-        (function($) {
-
-            //console.log($.connection);
-            var gameHubClient = $.connection.gameHub;
-
-            $.connection.hub.start(function () {
-                gameHubClient.server.join('@User.Identity.GetUserName()');
-            });
-        })(jQuery);
-    </script>
-
-
-    <script language="javascript" type="text/javascript">
 
         var gameHubClient = $.connection.gameHub;
 
         //test => contiendra la board serializée
-        var globalBoard = { title: "My New Post", body: "This is my first post!" };
+        var globalBoard = {};//{ title: "My New Post", body: "This is my first post!" };
 
         var templatesList = [
             {
+                name: "loading",
+                compiledTemplate: undefined,
+                parentDomElement: "#game .row",
+                onChangeAttribute: "Players"
+            },
+            //{
+            //    name: "playersList",
+            //    compiledTemplate: undefined,
+            //    parentDomElement: "#playersList",
+            //    onChangeAttribute: "title"
+            //}
+        ];
+
+        var ingameTemplatesList = [
+            {
                 name: "playersList",
                 compiledTemplate: undefined,
-                parentDomElement: "#playersList",
-                onChangeAttribute: "title"
+                parentDomElement: "#game .row",
+                onChangeAttribute: "NbRound"
+            },
+             {
+                 name: "board",
+                 compiledTemplate: undefined,
+                 parentDomElement: "#game .row",
+                 onChangeAttribute: "NbRound"
+             },
+            {
+                name: "actions",
+                compiledTemplate: undefined,
+                parentDomElement: "#game .row",
+                onChangeAttribute: "NbRound"
             }
         ];
 
@@ -42,6 +56,7 @@
         };
 
         var displayTemplate = function (templateElement, board) {
+            console.log(board.Players.length)
             var html = templateElement.compiledTemplate(board);
             $(templateElement.parentDomElement).html(html);
         };
@@ -90,6 +105,9 @@
             for (var i = templatesList.length - 1; i >= 0; i--) {
                 compileTemplate(templatesList[i]);
             };
+            for (var i = ingameTemplatesList.length - 1; i >= 0; i--) {
+                compileTemplate(ingameTemplatesList[i]);
+            };
         })(jQuery);
 
         $.connection.hub.start(function () {
@@ -97,24 +115,35 @@
         });
 
         gameHubClient.client.updateBoard = function (serializedBoard) {
+            var jsonBoard = JSON.parse(serializedBoard);
+            console.log(jsonBoard);
+
+            if (jsonBoard.NbRound > 0)
+                templatesList = ingameTemplatesList;
+
             for (var i = templatesList.length - 1; i >= 0; i--) {
                 //gestion des objets complexes à faire ?
-                if (recursiveObjectDiff(globalBoard[templatesList[i].onChangeAttribute], serializedBoard[templatesList[i].onChangeAttribute])) {
-                    displayTemplate(templatesList[i], serializedBoard);
+                if (recursiveObjectDiff(globalBoard[templatesList[i].onChangeAttribute], jsonBoard[templatesList[i].onChangeAttribute])) {
+                    displayTemplate(templatesList[i], jsonBoard);
+                } else {
+                    console.log("ça change pas!!!!")
                 }
-
             };
             globalBoard = serializedBoard;
         };
 
         //console test
-        var updateBoard = gameHubClient.client.updateBoard;
+        //var updateBoard = gameHubClient.client.updateBoard;
         //lancer dans la console : 
         //var globalBoard2 = { title: "My New Post2", body: "This is my first post!" };
         //updateBoard(globalBoard2);
         //magie !
+
     </script>
     }
 
-<h2>Index</h2>
-<div id="playersList"></div>
+<div id="game" class="container">
+    <div class="row">
+
+    </div>
+</div>

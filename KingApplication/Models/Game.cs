@@ -10,11 +10,11 @@ namespace WebApplication1.Models
     public class Game
     {
         private readonly static Lazy<Game> _instance = new Lazy<Game>(() => new Game());
-        public static List<Player> Players { get; set; }
+        public static Board KingBoard { get; set; }
 
         public Game()
         {
-            Players = new List<Player>();
+            KingBoard = new Board();
         }
 
         public static Game Instance
@@ -25,23 +25,19 @@ namespace WebApplication1.Models
             }
         }
 
-        public static void GetPlayers()
+        public static void UpdateBoard()
         {
             System.Web.Script.Serialization.JavaScriptSerializer oSerializer = new System.Web.Script.Serialization.JavaScriptSerializer();
-            string sJSON = oSerializer.Serialize(Players);
+            
+            string sJSON = oSerializer.Serialize(KingBoard);
 
             var clients = GameHub.Instance._context.Clients.All;
-            clients.userList(sJSON);
+            clients.updateBoard(sJSON);
         }
 
         public static void CountPlayers()
         {
-            GameHub.Instance._context.Clients.All.userCount(Players.Count);
-        }
-
-        public static void RedirectToGame()
-        {
-            GameHub.Instance._context.Clients.All.redirectToGame("/Game/");
+            GameHub.Instance._context.Clients.All.userCount(KingBoard.Players.Count);
         }
     }
 }
