@@ -1,7 +1,12 @@
-﻿<div class="entry col-md-4">
-    <ul>
-    {{#each Players}}
-    <li>{{Pseudo}}</li>
-    {{/each}}
+﻿<ul>
+{{#each Players}}
+    <li class="player {{#ifCond Pseudo '==' @root.CurrentPlayer.Pseudo}}player--current{{/ifCond}} sprite player__monster--{{Monster}}" data-player-id="{{id}}">
+    <p class="player__pseudo">{{Pseudo}}</p>
+    <ul class="player__attributes">
+        <li class="player__hp">{{Hp}}</li>
+        <li class="player__victory-point">{{VictoryPoint}}</li>
+        <li class="player__energy">{{Energy}}</li>
     </ul>
-</div>
+</li>
+{{/each}}
+</ul>

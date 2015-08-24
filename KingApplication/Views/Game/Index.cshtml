@@ -4,13 +4,15 @@
     ViewBag.Title = "Index";
 }
 @section scripts{
-    
+    <link rel="stylesheet" type="text/css" href="~/Content/game.css" />  
     <script language="javascript" type="text/javascript">
 
         var gameHubClient = $.connection.gameHub;
 
         //test => contiendra la board serializée
         var globalBoard = {};//{ title: "My New Post", body: "This is my first post!" };
+
+        var myName = '@User.Identity.GetUserName()';
 
         var templatesList = [
             {
@@ -28,20 +30,27 @@
         ];
 
         var ingameTemplatesList = [
-            {
-                name: "playersList",
-                compiledTemplate: undefined,
-                parentDomElement: "#game .row",
-                onChangeAttribute: "NbRound"
-            },
+
+             {
+                 name: "playersList",
+                 compiledTemplate: undefined,
+                 parentDomElement: "#players",
+                 onChangeAttribute: "NbRound"
+             },
              {
                  name: "board",
                  compiledTemplate: undefined,
-                 parentDomElement: "#game .row",
+                 parentDomElement: "#board",
                  onChangeAttribute: "NbRound"
              },
             {
                 name: "actions",
+                compiledTemplate: undefined,
+                parentDomElement: "#actions",
+                onChangeAttribute: "NbRound"
+            },
+            {
+                name: "container",
                 compiledTemplate: undefined,
                 parentDomElement: "#game .row",
                 onChangeAttribute: "NbRound"
@@ -56,7 +65,6 @@
         };
 
         var displayTemplate = function (templateElement, board) {
-            console.log(board.Players.length)
             var html = templateElement.compiledTemplate(board);
             $(templateElement.parentDomElement).html(html);
         };
@@ -121,6 +129,9 @@
             if (jsonBoard.NbRound > 0)
                 templatesList = ingameTemplatesList;
 
+            jsonBoard.myName = '@User.Identity.GetUserName()';
+            globalBoard.myName = '@User.Identity.GetUserName()';
+
             for (var i = templatesList.length - 1; i >= 0; i--) {
                 //gestion des objets complexes à faire ?
                 if (recursiveObjectDiff(globalBoard[templatesList[i].onChangeAttribute], jsonBoard[templatesList[i].onChangeAttribute])) {
@@ -134,16 +145,27 @@
 
         //console test
         //var updateBoard = gameHubClient.client.updateBoard;
-        //lancer dans la console : 
+        //lancer dans la console :
         //var globalBoard2 = { title: "My New Post2", body: "This is my first post!" };
         //updateBoard(globalBoard2);
         //magie !
+        $('body').delegate(".action__fin", "click", function (e) {
+            console.log(gameHubClient.server);
+            gameHubClient.server.endOfTurn();
+        });
 
-    </script>
+        $('body').delegate(".action__jouer", "click", function (e) {
+            gameHubClient.server.playerRollDices();
+            console.log(gameHubClient.server);
+           
+        });
+</script>
     }
 
 <div id="game" class="container">
     <div class="row">
-
+        
     </div>
 </div>
+
+
