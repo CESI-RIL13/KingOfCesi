@@ -16,6 +16,12 @@ namespace KingLibrary
         public LocationEnum Location { get; set; }
         public DateTime LastResponse { get; set; }
         public string IdConnection;
+        public int NbLancer { get; set; }
+        public List<Dice> listededes { get; set; }
+        public bool IsCurrentPlayer { get {
+
+                return true;
+        } }
 
         public Player(string pseudo, string idConnection)
         {
@@ -25,6 +31,15 @@ namespace KingLibrary
             VictoryPoint = 0;
             Hp = 10;
             Location = LocationEnum.OUT_CESI;
+        }
+        public void ThrowDices()
+        {
+            listededes = new List<Dice>();
+            for (int i = 0; i<6; i++)
+            {
+                listededes.Add(new Dice());
+            }
+            NbLancer--;
         }
     }
 }

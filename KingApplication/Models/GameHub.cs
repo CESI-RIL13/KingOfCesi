@@ -67,7 +67,9 @@ namespace WebApplication1.Models
         public void CreateGame(Object source, System.Timers.ElapsedEventArgs e)
         {
             _timer.Stop();
-            Game.KingBoard.NbRound =1;
+            Game.KingBoard.NbRound = 1;
+            Game.KingBoard.CurrentPlayer = Game.KingBoard.Players[0];
+            Game.KingBoard.CurrentPlayer.NbLancer = 3;
             Game.UpdateBoard();
         }
 
@@ -82,6 +84,18 @@ namespace WebApplication1.Models
             return base.OnDisconnected(stopCalled);
         }
 
+        public void EndOfTurn()
+        {
+            Game.KingBoard.NextPlayer();
+            Game.KingBoard.NbRound++;
+            Game.UpdateBoard();
+        }
+
+        public void PlayerRollDices()
+        {
+            Game.KingBoard.CurrentPlayer.ThrowDices();
+            Game.UpdateBoard();
+        }
 
     }
 }

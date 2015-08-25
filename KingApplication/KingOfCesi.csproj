@@ -187,8 +187,10 @@
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\ClientViews\board.html" />
     <Content Include="Content\ClientViews\actions.html" />
+    <Content Include="Content\ClientViews\container.html" />
     <Content Include="Content\ClientViews\loading.html" />
     <Content Include="Content\ClientViews\playersList.html" />
+    <Content Include="Content\game.css" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
@@ -196,6 +198,7 @@
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
+    <Content Include="Scripts\game.js" />
     <Content Include="Scripts\handlebars.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />

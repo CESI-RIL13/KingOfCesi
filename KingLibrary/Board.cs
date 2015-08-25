@@ -10,7 +10,7 @@ namespace KingLibrary
     {
         public int NbRound { get; set; }
         public List<Player> Players { get; set; }
-        public Player CurentPlayer { get; set; }
+        public Player CurrentPlayer { get; set; }
         public Dictionary<EventEnum, List<Card>> Observers { get; set; }
 
         public Board()
@@ -53,5 +53,19 @@ namespace KingLibrary
                 keyValuePair.Value.Remove(card);
             }
         }
+
+        public void NextPlayer()
+        {
+           for(int i = 0; i < Players.Count; i++)
+            {
+                if(Players[i].Pseudo == CurrentPlayer.Pseudo)
+                {
+                    CurrentPlayer.listededes = new List<Dice>();
+                    CurrentPlayer = (i+1 == Players.Count ? Players[0] : Players[i + 1]);
+                    CurrentPlayer.NbLancer = 3;
+                    break;
+                }
+            }
+        }        
     }
 }
