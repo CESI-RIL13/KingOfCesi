@@ -6,9 +6,8 @@ using System.Threading.Tasks;
 
 namespace KingLibrary
 {
-    public class Monster
+    public enum MonsterEnum
     {
-        public string Name { get; set; }
-        public string Image { get; set; }
+        THEKING, MEKADRAGON, ALIENOID, KRAKEN, GIGAZAUR, CYBERBUNNY
     }
 }

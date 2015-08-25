@@ -66,6 +66,31 @@ namespace KingLibrary
                     break;
                 }
             }
+        }
+        
+        public void DiceResolve()
+        {
+            int coeur = CurrentPlayer.selecaodedes.Count(x => x.ActiveFace == FaceEnum.LIFE);
+            int griffe = CurrentPlayer.selecaodedes.Count(x => x.ActiveFace == FaceEnum.ATTACK);
+            int energie = CurrentPlayer.selecaodedes.Count(x => x.ActiveFace == FaceEnum.ENERGY);
+            int un = CurrentPlayer.selecaodedes.Count(x => x.ActiveFace == FaceEnum.ONE);
+            int deux = CurrentPlayer.selecaodedes.Count(x => x.ActiveFace == FaceEnum.TWO);
+            int trois = CurrentPlayer.selecaodedes.Count(x => x.ActiveFace == FaceEnum.THREE);
+
+            CurrentPlayer.Energy += energie;
+            if (un >= 3)
+            {
+                CurrentPlayer.GainVPWithDices(1, un);
+            }
+            if (deux >= 3)
+            {
+                CurrentPlayer.GainVPWithDices(2, deux);
+            }
+            if (trois >= 3)
+            {
+                CurrentPlayer.GainVPWithDices(3, trois);
+            }
+
         }        
     }
 }

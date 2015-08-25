@@ -159,6 +159,16 @@
             console.log(gameHubClient.server);
            
         });
+
+        $('body').delegate(".dices .dice", "click", function (e) {
+            gameHubClient.server.selectDice($(this).index());
+            console.log(gameHubClient.server);
+        });
+
+        $('body').delegate(".dicesSelected .dice", "click", function (e) {
+            gameHubClient.server.unselectDice($(this).index());
+            console.log(gameHubClient.server);
+        });
 </script>
     }
 

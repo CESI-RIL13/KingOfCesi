@@ -39,9 +39,9 @@
             case 3:
                 return "dice--attack";
             case 4:
-                return "dice--energy";
-            case 5:
                 return "dice--hp";
+            case 5:
+                return "dice--energy";
         }
     });
 });

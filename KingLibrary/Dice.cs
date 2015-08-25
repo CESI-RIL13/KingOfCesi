@@ -12,7 +12,7 @@ namespace KingLibrary
         public static Random rand = new Random();
         public Dice()
         {
-            ActiveFace = (FaceEnum) rand.Next(0,5);
+            ActiveFace = (FaceEnum) rand.Next(0,6);
         }
     }
 }

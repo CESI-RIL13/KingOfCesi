@@ -1,16 +1,39 @@
 ﻿{{#ifCond myName '==' @root.CurrentPlayer.Pseudo}}
     <h2 class="action__title">C'est à vous de jouer</h2>
     <ul class="actions">
-        <li class="actions__button">
-            <button class="action__jouer" {{#ifCond 0 '==' @root.CurrentPlayer.NbLancer}} disabled {{/ifCond}}>Lancer ({{@root.CurrentPlayer.NbLancer}})</button>
-        </li>
-        <li class="actions__button">
-            <button class="actions__button action__fin">Fin de tour</button>
+        {{#ifCond @root.CurrentPlayer.NbLancer '==' 3}}
+            <li class="actions__button">
+                <button class="action__jouer">Lancer ({{@root.CurrentPlayer.NbLancer}})</button>
+            </li>
+            <li class="actions__button">
+                <button class="actions__button action__fin" disabled>Fin de tour</button>
+            </li>
+        {{else}}
+            <li class="actions__button">
+                <button class="action__jouer" {{#ifCond @root.CurrentPlayer.NbLancer '==' 0}} disabled {{/ifCond}}>Lancer ({{@root.CurrentPlayer.NbLancer}})</button>
+            </li>
+            <li class="actions__button">
+                <button class="actions__button action__fin">Fin de tour</button>
+            </li>
+        {{/ifCond}}
+        <li>
+            <ul class="dicesSelected">
+                {{#each CurrentPlayer.selecaodedes}}
+                <li class="dice selected sprite {{#getDice ActiveFace}} {{/getDice}}"></li>
+                {{/each}}
+            </ul>
         </li>
     </ul>
 {{else}}
     <h2 class="action__title">En attente...</h2>
     <ul class="actions">
+        <li>
+            <ul class="dicesSelected">
+                {{#each CurrentPlayer.selecaodedes}}
+                <li class="dice selected sprite {{#getDice ActiveFace}} {{/getDice}}"></li>
+                {{/each}}
+            </ul>
+        </li>
     </ul>
 {{/ifCond}}
 

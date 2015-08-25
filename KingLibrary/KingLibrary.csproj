@@ -65,7 +65,7 @@
       <DependentUpon>201507221322208_GenerationBDD.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
-    <Compile Include="Monster.cs" />
+    <Compile Include="MonsterEnum.cs" />
     <Compile Include="Player.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TypeMarker.cs" />

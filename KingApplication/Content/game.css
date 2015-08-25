@@ -41,9 +41,40 @@
     .player--current {
         box-shadow:0px 0px 20px rgba(85, 125, 203, 1), 0px 0px 20px rgba(85, 125, 203, 1), 0px 0px 20px rgba(85, 125, 203, 1)
     }
-    .player__monster-- {
+    /*TheKing*/
+    .player__monster--0 {
         background-position-x: -743px;
         background-position-y: -65px;
+    }
+    /*Mekadragon*/
+    .player__monster--1 {
+        background-size: 1082px;
+        background-position-x: -382px;
+        background-position-y: -168px;
+    }
+    /*Alienoide*/
+    .player__monster--2 {
+        background-position-x: -568px;
+        background-position-y: -153px;
+        background-size: 1082px;
+    }
+    /*Kraken*/
+    .player__monster--3 {
+        background-position-x: -350px;
+        background-position-y: -21px;
+        background-size: 745px;
+    }
+    /*Gigazaure*/
+    .player__monster--4 {
+        background-position-x: -1298px;
+        background-position-y: -266px;
+        background-size: 1803px;
+    }
+    /*Cyberbunny*/
+    .player__monster--5 {
+        background-position-x: -782px;
+        background-position-y: -24px;
+        background-size: 1126px;
     }
 
     .player__pseudo {
@@ -115,6 +146,11 @@
 }
 
 .dices {
+    padding: 0;
+    list-style: none;
+}
+
+.dicesSelected {
     padding: 0;
     list-style: none;
 }

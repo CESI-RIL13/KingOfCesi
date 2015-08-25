@@ -70,6 +70,12 @@ namespace WebApplication1.Models
             Game.KingBoard.NbRound = 1;
             Game.KingBoard.CurrentPlayer = Game.KingBoard.Players[0];
             Game.KingBoard.CurrentPlayer.NbLancer = 3;
+
+            for(int i = 0; i < Game.KingBoard.Players.Count; i++)
+            {
+                Game.KingBoard.Players[i].Monster = (MonsterEnum)i;
+            }
+
             Game.UpdateBoard();
         }
 
@@ -86,16 +92,46 @@ namespace WebApplication1.Models
 
         public void EndOfTurn()
         {
-            Game.KingBoard.NextPlayer();
-            Game.KingBoard.NbRound++;
-            Game.UpdateBoard();
+            if (CheckCurrentPlayer())
+            {
+                Game.KingBoard.DiceResolve();
+                Game.KingBoard.CurrentPlayer.selecaodedes.Clear();
+                Game.KingBoard.NextPlayer();
+                Game.KingBoard.NbRound++;
+                Game.UpdateBoard();
+            }
         }
 
         public void PlayerRollDices()
         {
-            Game.KingBoard.CurrentPlayer.ThrowDices();
-            Game.UpdateBoard();
+            if (CheckCurrentPlayer())
+            {
+                Game.KingBoard.CurrentPlayer.ThrowDices();
+                Game.UpdateBoard();
+            }
         }
 
+        public void SelectDice(int position)
+        {
+            if (CheckCurrentPlayer())
+            {
+                Game.KingBoard.CurrentPlayer.SelectDice(position);
+                Game.UpdateBoard();
+            }
+        }
+
+        public void UnselectDice(int position)
+        {
+           if (CheckCurrentPlayer())
+            {
+                Game.KingBoard.CurrentPlayer.UnselectDice(position);
+                Game.UpdateBoard();
+            }
+        }
+        private bool CheckCurrentPlayer()
+        {
+            Player p = Game.KingBoard.Players.Find(x => x.IdConnection == Context.ConnectionId);
+            return p.Pseudo == Game.KingBoard.CurrentPlayer.Pseudo;
+        }
     }
 }
