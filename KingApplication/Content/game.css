@@ -1,0 +1,151 @@
+﻿body {
+}
+
+.sprite {
+    background-image: url("img/game.jpg");
+}
+.board {
+    background-color : #77F;
+    width: 622px;
+    height: 622px;
+    background-position-x: 0px;
+    background-position-y: 0px;
+}
+.board--empty {
+    background-color: #000;
+}
+
+#players {
+    margin-top:100px;
+}
+#players ul {
+    margin: 0;
+    padding:0;
+    list-style : none;
+}
+
+.player {
+    height: 120px;
+    width: 120px;
+    border-radius: 60px;
+    overflow: hidden;
+    position:relative;
+    border: 2px solid #525EA0;
+    margin-top: -40px;
+}
+.player:nth-child(even)
+{
+    margin-left: 130px
+}
+
+    .player--current {
+        box-shadow:0px 0px 20px rgba(85, 125, 203, 1), 0px 0px 20px rgba(85, 125, 203, 1), 0px 0px 20px rgba(85, 125, 203, 1)
+    }
+    .player__monster-- {
+        background-position-x: -743px;
+        background-position-y: -65px;
+    }
+
+    .player__pseudo {
+        position: relative;
+        background-color:#fbe018;
+        border: solid 3px #fc7725;
+        margin-top: 54px;
+        text-align: center;
+        text-shadow: 1px 2px 2px #fbe018;
+        width: 116px;
+        height: 20px;
+        line-height: 14px;
+        z-index:2;
+        border-radius:20px;
+    }
+
+    .player__attributes {
+        width:120px;
+        position:absolute;
+        bottom:0;
+        height:50px;
+        line-height: 40px;
+        color: #fff;
+        font-weight: bold;
+        text-shadow: 1px 2px 2px #000;   
+        text-align: center;
+        list-style: none;
+        margin:0;
+        padding:0;
+
+    }
+    .player__attributes li {
+        width: 33%;
+        height:70px;
+        float: left;
+    }
+    .player__hp {
+        background-color: #cf3e1b;
+    
+    }
+
+    .player__victory-point {
+        background-color: #557dcb;
+    }
+
+    .player__energy {
+        background-color: #31c152;
+    }
+
+.actions {
+    list-style: none;
+    padding: 0;
+}
+
+.actions__button {
+    margin-top: 5px;
+}
+
+.action__title {
+
+}
+
+.action__jouer {
+
+}
+
+.action__fin {
+
+}
+
+.dices {
+    padding: 0;
+    list-style: none;
+}
+
+.dice {
+    float: left;
+    height: 58px;
+    width: 60px;
+    margin: 5px;
+}
+.dice--1 {
+        background-position-x: -1754px;
+        background-position-y: -554px;
+}
+.dice--2 {
+        background-position-x: -1819px;
+        background-position-y: -554px;
+}
+.dice--3 {
+        background-position-x: -1880px;
+        background-position-y: -554px;
+}
+.dice--hp {
+        background-position-x: -2001px;
+        background-position-y: -554px;
+}
+.dice--attack {
+        background-position-x: -2061px;
+        background-position-y: -554px;
+}
+.dice--energy {
+        background-position-x: -1941px;
+        background-position-y: -554px;
+}
