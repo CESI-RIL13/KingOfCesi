@@ -143,6 +143,10 @@
             globalBoard = serializedBoard;
         };
 
+        gameHubClient.client.askPlayer = function () {
+            $('.modal').modal('show');
+        };
+
         //console test
         //var updateBoard = gameHubClient.client.updateBoard;
         //lancer dans la console :

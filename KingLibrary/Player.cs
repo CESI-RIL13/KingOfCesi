@@ -67,5 +67,15 @@ namespace KingLibrary
         {
             this.VictoryPoint += (dice + value-3);
         }
+
+        public void Soingner(int soin)
+        {
+            this.Hp = (this.Hp + soin) >= 10 ? 10 : this.Hp + soin;
+        }
+
+        public void PrendreDegats(int point)
+        {
+            this.Hp = (this.Hp - point) <= 0 ? 0 : this.Hp - point;
+        }
     }
 }

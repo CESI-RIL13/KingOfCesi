@@ -94,7 +94,11 @@ namespace WebApplication1.Models
         {
             if (CheckCurrentPlayer())
             {
+                /*NINJA!*/
+                Game.KingBoard.AskClient += Game.AskClient;
                 Game.KingBoard.DiceResolve();
+                Game.KingBoard.AskClient -= Game.AskClient;
+
                 Game.KingBoard.CurrentPlayer.selecaodedes.Clear();
                 Game.KingBoard.NextPlayer();
                 Game.KingBoard.NbRound++;
