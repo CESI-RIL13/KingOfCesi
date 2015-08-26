@@ -6,173 +6,204 @@
 @section scripts{
     <link rel="stylesheet" type="text/css" href="~/Content/game.css" />  
     <script language="javascript" type="text/javascript">
+        (function () {
+            var gameHubClient = $.connection.gameHub;
+            var jsonBoard = {};
+            //test => contiendra la board serializée
+            var globalBoard = {};//{ title: "My New Post", body: "This is my first post!" };
 
-        var gameHubClient = $.connection.gameHub;
+            var myName = '@User.Identity.GetUserName()';
 
-        //test => contiendra la board serializée
-        var globalBoard = {};//{ title: "My New Post", body: "This is my first post!" };
+            var templatesList = [
+                {
+                    name: "loading",
+                    compiledTemplate: undefined,
+                    parentDomElement: "#game .row",
+                    onChangeAttribute: "Players"
+                },
+                //{
+                //    name: "playersList",
+                //    compiledTemplate: undefined,
+                //    parentDomElement: "#playersList",
+                //    onChangeAttribute: "title"
+                //}
+            ];
 
-        var myName = '@User.Identity.GetUserName()';
+            var ingameTemplatesList = [
 
-        var templatesList = [
-            {
-                name: "loading",
-                compiledTemplate: undefined,
-                parentDomElement: "#game .row",
-                onChangeAttribute: "Players"
-            },
-            //{
-            //    name: "playersList",
-            //    compiledTemplate: undefined,
-            //    parentDomElement: "#playersList",
-            //    onChangeAttribute: "title"
-            //}
-        ];
+                 {
+                     name: "playersList",
+                     compiledTemplate: undefined,
+                     parentDomElement: "#players",
+                     onChangeAttribute: "NbRound"
+                 },
+                 {
+                     name: "board",
+                     compiledTemplate: undefined,
+                     parentDomElement: "#board",
+                     onChangeAttribute: "NbRound"
+                 },
+                {
+                    name: "actions",
+                    compiledTemplate: undefined,
+                    parentDomElement: "#actions",
+                    onChangeAttribute: "NbRound"
+                },
+                {
+                    name: "container",
+                    compiledTemplate: undefined,
+                    parentDomElement: "#game .row",
+                    onChangeAttribute: "NbRound"
+                },
+                {
+                    name: "messages",
+                    compiledTemplate: undefined,
+                    parentDomElement: "#footer",
+                    //onChangeAttribute: "NbRound"
+                }
+            ];
 
-        var ingameTemplatesList = [
+            var compileTemplate = function (templateElement) {
+                $.get("/Content/ClientViews/" + templateElement.name + ".html", function (source) {
+                    templateElement.compiledTemplate = Handlebars.compile(source);
+                    displayTemplate(templateElement, globalBoard);
+                });
+            };
 
-             {
-                 name: "playersList",
-                 compiledTemplate: undefined,
-                 parentDomElement: "#players",
-                 onChangeAttribute: "NbRound"
-             },
-             {
-                 name: "board",
-                 compiledTemplate: undefined,
-                 parentDomElement: "#board",
-                 onChangeAttribute: "NbRound"
-             },
-            {
-                name: "actions",
-                compiledTemplate: undefined,
-                parentDomElement: "#actions",
-                onChangeAttribute: "NbRound"
-            },
-            {
-                name: "container",
-                compiledTemplate: undefined,
-                parentDomElement: "#game .row",
-                onChangeAttribute: "NbRound"
-            }
-        ];
+            var displayTemplate = function (templateElement, board) {
+                var html = templateElement.compiledTemplate(board);
+                $(templateElement.parentDomElement).html(html);
+            };
 
-        var compileTemplate = function (templateElement) {
-            $.get("/Content/ClientViews/" + templateElement.name + ".html", function (source) {
-                templateElement.compiledTemplate = Handlebars.compile(source);
-                displayTemplate(templateElement, globalBoard);
+            var recursiveObjectDiff = function (parent, object) {
+
+                if (parent != undefined && object == undefined) {
+                    return true;
+                }
+                else if (parent == undefined && object != undefined) {
+                    return true;
+                }
+                else if (Object.prototype.toString.call(object) === '[object Array]') {
+                    if (Object.prototype.toString.call(parent) !== '[object Array]') {
+                        return true;
+                    }
+                    var result = false;
+                    for (var i = 0; i < object.length; i++) {
+                        if (recursiveObjectDiff(parent[i], object[i])) {
+                            result = true;
+                        }
+                    }
+                    return result;
+                }
+                else if (typeof (object) === "object") {
+                    if (typeof (parent) !== "object") {
+                        return true;
+                    }
+                    var result = false;
+                    for (var property in object) {
+                        if (recursiveObjectDiff(parent[property], object[property])) {
+                            result = true;
+                        }
+                    }
+                    return result;
+                }
+                else if (parent !== object) {
+                    return true;
+                }
+                else {
+                    return false;
+                }
+            };
+
+            (function ($) {
+                for (var i = templatesList.length - 1; i >= 0; i--) {
+                    compileTemplate(templatesList[i]);
+                };
+                for (var i = ingameTemplatesList.length - 1; i >= 0; i--) {
+                    compileTemplate(ingameTemplatesList[i]);
+                };
+            })(jQuery);
+
+            $.connection.hub.start(function () {
+                gameHubClient.server.join('@User.Identity.GetUserName()');
             });
-        };
 
-        var displayTemplate = function (templateElement, board) {
-            var html = templateElement.compiledTemplate(board);
-            $(templateElement.parentDomElement).html(html);
-        };
+            gameHubClient.client.updateBoard = function (serializedBoard) {
+                jsonBoard = JSON.parse(serializedBoard);
+                console.log(jsonBoard);
 
-        var recursiveObjectDiff = function (parent, object) {
+                if (jsonBoard.NbRound > 0)
+                    templatesList = ingameTemplatesList;
 
-            if (parent != undefined && object == undefined) {
-                return true;
-            }
-            else if (parent == undefined && object != undefined) {
-                return true;
-            }
-            else if (Object.prototype.toString.call(object) === '[object Array]') {
-                if (Object.prototype.toString.call(parent) !== '[object Array]') {
-                    return true;
-                }
-                var result = false;
-                for (var i = 0; i < object.length; i++) {
-                    if (recursiveObjectDiff(parent[i], object[i])) {
-                        result = true;
+                jsonBoard.myName = '@User.Identity.GetUserName()';
+                globalBoard.myName = '@User.Identity.GetUserName()';
+
+                checkVictory();
+
+                for (var i = templatesList.length - 1; i >= 0; i--) {
+                    //gestion des objets complexes à faire ?
+                    if (recursiveObjectDiff(globalBoard[templatesList[i].onChangeAttribute], jsonBoard[templatesList[i].onChangeAttribute])) {
+                        displayTemplate(templatesList[i], jsonBoard);
+                    } else {
+                        console.log("ça change pas!!!!")
                     }
-                }
-                return result;
-            }
-            else if (typeof (object) === "object") {
-                if (typeof (parent) !== "object") {
-                    return true;
-                }
-                var result = false;
-                for (var property in object) {
-                    if (recursiveObjectDiff(parent[property], object[property])) {
-                        result = true;
-                    }
-                }
-                return result;
-            }
-            else if (parent !== object) {
-                return true;
-            }
-            else {
-                return false;
-            }
-        };
-
-        (function ($) {
-            for (var i = templatesList.length - 1; i >= 0; i--) {
-                compileTemplate(templatesList[i]);
+                };
+                globalBoard = serializedBoard;
             };
-            for (var i = ingameTemplatesList.length - 1; i >= 0; i--) {
-                compileTemplate(ingameTemplatesList[i]);
+
+            gameHubClient.client.askPlayer = function () {
+                $('.modal').modal({ show: true, backdrop: 'static' });
             };
-        })(jQuery);
 
-        $.connection.hub.start(function () {
-            gameHubClient.server.join('@User.Identity.GetUserName()');
-        });
+            $('body').delegate('.modal button', 'click', function (e) {
+                gameHubClient.server.leaveTokyo($(this).hasClass('btn-primary'));
+                $('.modal').modal('hide')
+            })
 
-        gameHubClient.client.updateBoard = function (serializedBoard) {
-            var jsonBoard = JSON.parse(serializedBoard);
-            console.log(jsonBoard);
+            //console test
+            //var updateBoard = gameHubClient.client.updateBoard;
+            //lancer dans la console :
+            //var globalBoard2 = { title: "My New Post2", body: "This is my first post!" };
+            //updateBoard(globalBoard2);
+            //magie !
+            $('body').delegate(".action__fin", "click", function (e) {
+                console.log(gameHubClient.server);
+                gameHubClient.server.endOfTurn();
+            });
 
-            if (jsonBoard.NbRound > 0)
-                templatesList = ingameTemplatesList;
+            $('body').delegate(".action__diceResolve", "click", function (e) {
+                console.log(jsonBoard)
+                if (jsonBoard.CurrentPlayer.SelectedDices.length < 6)
+                    return;
+                console.log('resolve dice!')
+                gameHubClient.server.diceResolve();
+            });
 
-            jsonBoard.myName = '@User.Identity.GetUserName()';
-            globalBoard.myName = '@User.Identity.GetUserName()';
+            $('body').delegate(".action__jouer", "click", function (e) {
+                gameHubClient.server.playerRollDices();
+                console.log(gameHubClient.server);
 
-            for (var i = templatesList.length - 1; i >= 0; i--) {
-                //gestion des objets complexes à faire ?
-                if (recursiveObjectDiff(globalBoard[templatesList[i].onChangeAttribute], jsonBoard[templatesList[i].onChangeAttribute])) {
-                    displayTemplate(templatesList[i], jsonBoard);
-                } else {
-                    console.log("ça change pas!!!!")
-                }
-            };
-            globalBoard = serializedBoard;
-        };
+            });
 
-        gameHubClient.client.askPlayer = function () {
-            $('.modal').modal('show');
-        };
+            $('body').delegate(".dices .dice", "click", function (e) {
+                gameHubClient.server.selectDice($(this).index());
+                console.log(gameHubClient.server);
+            });
 
-        //console test
-        //var updateBoard = gameHubClient.client.updateBoard;
-        //lancer dans la console :
-        //var globalBoard2 = { title: "My New Post2", body: "This is my first post!" };
-        //updateBoard(globalBoard2);
-        //magie !
-        $('body').delegate(".action__fin", "click", function (e) {
-            console.log(gameHubClient.server);
-            gameHubClient.server.endOfTurn();
-        });
+            $('body').delegate(".dicesSelected .dice", "click", function (e) {
+                gameHubClient.server.unselectDice($(this).index());
+                console.log(gameHubClient.server);
+            });
 
-        $('body').delegate(".action__jouer", "click", function (e) {
-            gameHubClient.server.playerRollDices();
-            console.log(gameHubClient.server);
-           
-        });
+            var checkVictory = function () {
+                if (!jsonBoard.YeahItsFinish)
+                    return;
 
-        $('body').delegate(".dices .dice", "click", function (e) {
-            gameHubClient.server.selectDice($(this).index());
-            console.log(gameHubClient.server);
-        });
-
-        $('body').delegate(".dicesSelected .dice", "click", function (e) {
-            gameHubClient.server.unselectDice($(this).index());
-            console.log(gameHubClient.server);
-        });
+                $(jsonBoard.Players).each(function (index, player) {
+                    window.location.href = player.Pseudo == myName && player.KingOfCesi ? '/Game/Win' : '/Game/Loose'
+                })
+            }
+        })();
 </script>
     }
 
@@ -180,6 +211,8 @@
     <div class="row">
         
     </div>
+</div>
+<div id="footer">
 </div>
 
 

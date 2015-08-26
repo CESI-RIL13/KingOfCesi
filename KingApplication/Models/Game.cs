@@ -35,15 +35,13 @@ namespace WebApplication1.Models
             clients.updateBoard(sJSON);
         }
 
-        public static void AskClient()
+        public static void AskClient(Player player)
         {
-            Player p = Game.KingBoard.Players.FirstOrDefault(x => x.Location == LocationEnum.CESI_CITY);
-            if (p != null)
+            if (player != null && player.Location != LocationEnum.CIMETARY_CESI)
             {
-                GameHub.Instance._context.Clients.Client(p.IdConnection).askPlayer();
+                Game.KingBoard.CountAnwserStandbyFor++;
+                GameHub.Instance._context.Clients.Client(player.IdConnection).askPlayer();
             }
-
-            //Player p = Game.KingBoard.Players.Find(x => x.IdConnection == GameHub.Instance.Context.ConnectionId);
         }
 
         public static void CountPlayers()

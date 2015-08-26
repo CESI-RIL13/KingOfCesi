@@ -25,5 +25,15 @@ namespace WebApplication1.Controllers
         {
             return View();
         }
+
+        public ActionResult Win()
+        {
+            return View();
+        }
+
+        public ActionResult Loose()
+        {
+            return View();
+        }
     }
 }

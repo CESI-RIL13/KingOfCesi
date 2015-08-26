@@ -1,6 +1,6 @@
 ﻿<ul>
 {{#each Players}}
-    <li class="player {{#ifCond Pseudo '==' @root.CurrentPlayer.Pseudo}}player--current{{/ifCond}} sprite player__monster--{{Monster}}" data-player-id="{{id}}">
+    <li class="player {{#ifCond Pseudo '==' @root.CurrentPlayer.Pseudo}}player--current{{/ifCond}} {{#if Disconnected}}player--disconected{{/if}} sprite player__monster--{{Monster}}" data-player-id="{{id}}">
     <p class="player__pseudo">{{Pseudo}}</p>
     <ul class="player__attributes">
         <li class="player__hp">{{Hp}}</li>

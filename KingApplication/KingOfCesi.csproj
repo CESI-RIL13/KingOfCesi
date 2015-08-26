@@ -189,6 +189,7 @@
     <Content Include="Content\ClientViews\actions.html" />
     <Content Include="Content\ClientViews\container.html" />
     <Content Include="Content\ClientViews\loading.html" />
+    <Content Include="Content\ClientViews\messages.html" />
     <Content Include="Content\ClientViews\playersList.html" />
     <Content Include="Content\game.css" />
     <Content Include="favicon.ico" />
@@ -251,6 +252,8 @@
     <Content Include="Views\Manage\ChangePseudo.cshtml" />
     <Content Include="Views\Game\Index.cshtml" />
     <Content Include="Views\Game\Loading.cshtml" />
+    <Content Include="Views\Game\Win.cshtml" />
+    <Content Include="Views\Game\Loose.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

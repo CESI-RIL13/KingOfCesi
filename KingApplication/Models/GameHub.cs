@@ -58,6 +58,7 @@ namespace WebApplication1.Models
             else
             {
                 Player p = Game.KingBoard.Players.Find(x => x.Pseudo == pseudo);
+                p.Disconnected = false;
                 p.IdConnection = Context.ConnectionId;
             }
 
@@ -81,7 +82,9 @@ namespace WebApplication1.Models
 
         public override Task OnDisconnected(bool stopCalled)
         {
-            Game.KingBoard.Players.Remove(Game.KingBoard.Players.Find(x => x.IdConnection == Context.ConnectionId));
+            Player p = Game.KingBoard.Players.First(x => x.IdConnection == Context.ConnectionId);
+            p.Disconnected = true;
+            Game.UpdateBoard();
             Game.CountPlayers();
             if (Game.KingBoard.Players.Count <= 1)
             {
@@ -90,7 +93,7 @@ namespace WebApplication1.Models
             return base.OnDisconnected(stopCalled);
         }
 
-        public void EndOfTurn()
+        public void DiceResolve()
         {
             if (CheckCurrentPlayer())
             {
@@ -98,8 +101,21 @@ namespace WebApplication1.Models
                 Game.KingBoard.AskClient += Game.AskClient;
                 Game.KingBoard.DiceResolve();
                 Game.KingBoard.AskClient -= Game.AskClient;
+                if (Game.KingBoard.CountAnwserStandbyFor == 0)
+                {
+                    Game.KingBoard.EndOfTurn = true;
+                }
+                Game.UpdateBoard();
+            }
+        }
+        public void EndOfTurn()
+        {
+            if (CheckCurrentPlayer())
+            {
+                /*NINJA!*/
+                Game.KingBoard.CurrentPlayer.SelectedDices.Clear();
+                Game.KingBoard.CheckWinner();
 
-                Game.KingBoard.CurrentPlayer.selecaodedes.Clear();
                 Game.KingBoard.NextPlayer();
                 Game.KingBoard.NbRound++;
                 Game.UpdateBoard();
@@ -136,6 +152,27 @@ namespace WebApplication1.Models
         {
             Player p = Game.KingBoard.Players.Find(x => x.IdConnection == Context.ConnectionId);
             return p.Pseudo == Game.KingBoard.CurrentPlayer.Pseudo;
+        }
+
+        public void LeaveTokyo(bool answer)
+        {
+            Player p = Game.KingBoard.Players.Find(x => x.IdConnection == Context.ConnectionId && (x.Location == LocationEnum.CESI_BAY || x.Location == LocationEnum.CESI_CITY));
+            Game.KingBoard.CountAnwser++;
+            if (answer && p != null)
+            {
+               
+                p.Location = LocationEnum.OUT_CESI;
+
+                if (Game.KingBoard.CurrentPlayer.Location != LocationEnum.CESI_CITY)
+                { 
+                    Game.KingBoard.AffectCityPlace(Game.KingBoard.CurrentPlayer);
+                }
+            }
+            if (Game.KingBoard.CountAnwser == Game.KingBoard.CountAnwserStandbyFor)
+            {
+                Game.KingBoard.EndOfTurn = true;
+            }
+            Game.UpdateBoard();
         }
     }
 }

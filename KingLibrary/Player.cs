@@ -13,16 +13,25 @@ namespace KingLibrary
         public int Energy { get; set; }
         public int VictoryPoint { get; set; }
         public int Hp { get; set; }
-        public LocationEnum Location { get; set; }
+        public LocationEnum Location { get {
+                if (Hp == 0)
+                    return Location = LocationEnum.CIMETARY_CESI;
+                else
+                    return _location;
+            } set {
+                if (Hp > 0)
+                    _location = value;
+            }
+        }
+        private LocationEnum _location;
         public DateTime LastResponse { get; set; }
         public string IdConnection;
         public int NbLancer { get; set; }
-        public List<Dice> listededes { get; set; }
-        public List<Dice> selecaodedes = new List<Dice>();
-        public bool IsCurrentPlayer { get {
-
-                return true;
-        } }
+        public List<Dice> Dices { get; set; }
+        public List<Dice> SelectedDices = new List<Dice>();
+        public bool HasResolveDice;
+        public bool KingOfCesi;
+        public bool Disconnected = false;
 
         public Player(string pseudo, string idConnection)
         {
@@ -30,37 +39,37 @@ namespace KingLibrary
             IdConnection = idConnection;
             Energy = 0;
             VictoryPoint = 0;
-            Hp = 10;
+            Hp = 2;
             Location = LocationEnum.OUT_CESI;
         }
         public void ThrowDices()
         {
-            listededes = new List<Dice>();
-            for (int i = 0; i<(6-selecaodedes.Count); i++)
+            Dices = new List<Dice>();
+            for (int i = 0; i<(6-SelectedDices.Count); i++)
             {
-                listededes.Add(new Dice());
+                Dices.Add(new Dice());
             }
             NbLancer--;
             if (NbLancer == 0)
             {
-                foreach (Dice dice in listededes)
+                foreach (Dice dice in Dices)
                 {
-                    selecaodedes.Add(dice);
+                    SelectedDices.Add(dice);
                 }
-                listededes.Clear();
+                Dices.Clear();
             }
         }
 
         public void SelectDice(int positionDe)
         {
-            selecaodedes.Add(listededes[positionDe]);
-            listededes.RemoveAt(positionDe);
+            SelectedDices.Add(Dices[positionDe]);
+            Dices.RemoveAt(positionDe);
         }
 
         public void UnselectDice(int positionDe)
         {
-            listededes.Add(selecaodedes[positionDe]);
-            selecaodedes.RemoveAt(positionDe);
+            Dices.Add(SelectedDices[positionDe]);
+            SelectedDices.RemoveAt(positionDe);
         }
 
         public void GainVPWithDices(int dice, int value)

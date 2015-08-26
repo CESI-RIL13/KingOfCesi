@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace KingLibrary
 {
-    public delegate void AskClientDelegate();
+    public delegate void AskClientDelegate(Player p);
 
     public class Board
     {
@@ -14,32 +14,21 @@ namespace KingLibrary
         public List<Player> Players { get; set; }
         public Player CurrentPlayer { get; set; }
         public Dictionary<EventEnum, List<Card>> Observers { get; set; }
-        public List<Player> playerTokyo { get; set; }
         public AskClientDelegate AskClient;
+        public bool EndOfTurn { get; set; }
+        public int CountAnwser { get; set; }
+        public int CountAnwserStandbyFor { get; set; }
+        public bool YeahItsFinish;
 
         public Board()
         {
             NbRound = 0;
             Players = new List<Player>();
             Observers = new Dictionary<EventEnum, List<Card>>();
+            EndOfTurn = false;
+            CountAnwser = 0;
+            CountAnwserStandbyFor = 0;
         }
-
-        /// <summary>
-        /// Ajoute un joueur.
-        /// </summary>
-        /// <param name="name">Le nom du joueur.</param>
-        //public void AddPlayer(string name) {
-        //    Players.Add(new Player(name),);
-        //}
-
-        /// <summary>
-        /// Supprime un joueur.
-        /// </summary>
-        /// <param name="player">Le joueur.</param>
-        //public void RemovePlayer(Player player)
-        //{
-        //    Players.Remove(player);
-        //}
 
         public void SubscribeEvent(EventEnum eventParam, Card card)
         {
@@ -60,30 +49,49 @@ namespace KingLibrary
 
         public void NextPlayer()
         {
-           for(int i = 0; i < Players.Count; i++)
+            List<Player> playerAliveList = Players.Where(x=> x.Location != LocationEnum.CIMETARY_CESI).ToList();
+            CurrentPlayer = playerAliveList.IndexOf(CurrentPlayer) + 1 == playerAliveList.Count ? playerAliveList[0] : playerAliveList[playerAliveList.IndexOf(CurrentPlayer) + 1];
+
+            CurrentPlayer.Dices = new List<Dice>();
+            
+            if (CurrentPlayer.Location == LocationEnum.CESI_BAY || CurrentPlayer.Location == LocationEnum.CESI_CITY)
+                CurrentPlayer.VictoryPoint += 2;
+
+            CurrentPlayer.HasResolveDice = false;
+            CurrentPlayer.NbLancer = 3;
+            EndOfTurn = false;
+            CountAnwser = 0;
+            CountAnwserStandbyFor = 0;
+        }
+
+        public void AffectCityPlace(Player player)
+        {
+            if(Players.Count(x => x.Location == LocationEnum.CESI_CITY) == 0) {
+                player.VictoryPoint++;
+                player.Location = LocationEnum.CESI_CITY;
+            } else if (Players.Count(x => x.Location == LocationEnum.CESI_BAY) == 0 && Players.Count > 4)
             {
-                if(Players[i].Pseudo == CurrentPlayer.Pseudo)
-                {
-                    CurrentPlayer.listededes = new List<Dice>();
-                    CurrentPlayer = (i+1 == Players.Count ? Players[0] : Players[i + 1]);
-
-                    if (CurrentPlayer.Location == LocationEnum.CESI_BAY || CurrentPlayer.Location == LocationEnum.CESI_CITY)
-                        CurrentPlayer.VictoryPoint += 2;
-
-                    CurrentPlayer.NbLancer = 3;
-                    break;
-                }
+                player.VictoryPoint++;
+                player.Location = LocationEnum.CESI_BAY;
             }
         }
 
         public void DiceResolve()
         {
-            int coeur = CurrentPlayer.selecaodedes.Count(x => x.ActiveFace == FaceEnum.LIFE);
-            int griffe = CurrentPlayer.selecaodedes.Count(x => x.ActiveFace == FaceEnum.ATTACK);
-            int energie = CurrentPlayer.selecaodedes.Count(x => x.ActiveFace == FaceEnum.ENERGY);
-            int un = CurrentPlayer.selecaodedes.Count(x => x.ActiveFace == FaceEnum.ONE);
-            int deux = CurrentPlayer.selecaodedes.Count(x => x.ActiveFace == FaceEnum.TWO);
-            int trois = CurrentPlayer.selecaodedes.Count(x => x.ActiveFace == FaceEnum.THREE);
+            if (CurrentPlayer.SelectedDices.Count != 6 || CurrentPlayer.HasResolveDice)
+            {
+                return;
+            }
+
+            CurrentPlayer.HasResolveDice = true;
+            CurrentPlayer.NbLancer = 0;
+
+            int coeur = CurrentPlayer.SelectedDices.Count(x => x.ActiveFace == FaceEnum.LIFE);
+            int griffe = CurrentPlayer.SelectedDices.Count(x => x.ActiveFace == FaceEnum.ATTACK);
+            int energie = CurrentPlayer.SelectedDices.Count(x => x.ActiveFace == FaceEnum.ENERGY);
+            int un = CurrentPlayer.SelectedDices.Count(x => x.ActiveFace == FaceEnum.ONE);
+            int deux = CurrentPlayer.SelectedDices.Count(x => x.ActiveFace == FaceEnum.TWO);
+            int trois = CurrentPlayer.SelectedDices.Count(x => x.ActiveFace == FaceEnum.THREE);
             
             CurrentPlayer.Energy += energie;
 
@@ -103,20 +111,14 @@ namespace KingLibrary
                 {
                     foreach (Player p in Players.Where(x => x.Location == LocationEnum.CESI_BAY || x.Location == LocationEnum.CESI_CITY))
                     {
-                        AskClient();
                         p.PrendreDegats(griffe);
+                        if(p.Disconnected == false)
+                        {
+                            AskClient(p);
+                        }
                     }
                 }
-                if (Players.Count(x => x.Location == LocationEnum.CESI_CITY) == 0)
-                {
-                    CurrentPlayer.VictoryPoint += 1;
-                    CurrentPlayer.Location = LocationEnum.CESI_CITY;
-                }
-                else if (Players.Count(x => x.Location == LocationEnum.CESI_CITY) != 0 && Players.Count(x => x.Location == LocationEnum.CESI_BAY) == 0 && Players.Count>4)
-                {
-                    CurrentPlayer.VictoryPoint += 1;
-                    CurrentPlayer.Location = LocationEnum.CESI_BAY;
-                }
+                AffectCityPlace(CurrentPlayer);
             }
             if (un >= 3)
             {
@@ -131,6 +133,43 @@ namespace KingLibrary
                 CurrentPlayer.GainVPWithDices(3, trois);
             }
         }  
-              
+        
+        public bool IsDead(Player player)
+        {
+            return player.Location == LocationEnum.CIMETARY_CESI;
+        }
+
+        public void CheckWinner()
+        {
+
+            //Verif win
+            //Winner par KO
+            int countWinners = 0;
+            
+            List<Player> playerAliveList = Players.Where(x => x.Location != LocationEnum.CIMETARY_CESI).ToList();
+            if (playerAliveList.Count == 1)
+            {
+                countWinners++;
+                playerAliveList[0].KingOfCesi = true;
+            }
+            else if (playerAliveList.Count == 0)
+            {
+                YeahItsFinish = false;
+            }
+            //Winner par Victory Point
+            foreach (Player p in playerAliveList)
+            {
+                if (p.VictoryPoint >= 20)
+                {
+                    countWinners++;
+                    p.KingOfCesi = true;
+                }
+            }
+
+            if (countWinners > 0)
+            {
+                YeahItsFinish = true; // c'est la selecao
+            }
+        }
     }
 }

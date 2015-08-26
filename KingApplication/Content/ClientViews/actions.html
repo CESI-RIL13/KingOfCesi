@@ -5,31 +5,34 @@
             <li class="actions__button">
                 <button class="action__jouer">Lancer ({{@root.CurrentPlayer.NbLancer}})</button>
             </li>
-            <li class="actions__button">
-                <button class="actions__button action__fin" disabled>Fin de tour</button>
-            </li>
         {{else}}
             <li class="actions__button">
                 <button class="action__jouer" {{#ifCond @root.CurrentPlayer.NbLancer '==' 0}} disabled {{/ifCond}}>Lancer ({{@root.CurrentPlayer.NbLancer}})</button>
             </li>
-            <li class="actions__button">
-                <button class="actions__button action__fin">Fin de tour</button>
-            </li>
         {{/ifCond}}
         <li>
             <ul class="dicesSelected">
-                {{#each CurrentPlayer.selecaodedes}}
+                {{#each CurrentPlayer.SelectedDices}}
                 <li class="dice selected sprite {{#getDice ActiveFace}} {{/getDice}}"></li>
                 {{/each}}
             </ul>
         </li>
+        {{#if @root.EndOfTurn}}
+        <li class="actions__button">
+            <button class="actions__button action__fin">Fin du tour</button>
+        </li>
+        {{else}}
+            <li class="actions__button">
+                <button class="actions__button action__diceResolve" {{#ifCond CurrentPlayer.SelectedDices.length '<' 6}} disabled {{/ifCond}}>Valider</button>
+            </li>
+        {{/if}}
     </ul>
 {{else}}
     <h2 class="action__title">En attente...</h2>
     <ul class="actions">
         <li>
             <ul class="dicesSelected">
-                {{#each CurrentPlayer.selecaodedes}}
+                {{#each CurrentPlayer.SelectedDices}}
                 <li class="dice selected sprite {{#getDice ActiveFace}} {{/getDice}}"></li>
                 {{/each}}
             </ul>

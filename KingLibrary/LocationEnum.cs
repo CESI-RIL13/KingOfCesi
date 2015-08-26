@@ -8,6 +8,6 @@ namespace KingLibrary
 {
     public enum LocationEnum
     {
-        CESI_CITY, CESI_BAY, OUT_CESI
+        CESI_CITY, CESI_BAY, OUT_CESI, CIMETARY_CESI, DECONNECTED
     }
 }
