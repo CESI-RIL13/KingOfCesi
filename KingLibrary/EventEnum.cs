@@ -11,6 +11,7 @@
         ENERGY_LOSS,
         GAIN_VICTORYPOINT,
         VICTORYPOINT_LOSS,
-        END_ROUND
+        END_ROUND,
+        CARD_BOUGHT
     }
 }

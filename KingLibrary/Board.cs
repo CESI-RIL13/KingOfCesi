@@ -58,7 +58,7 @@ namespace KingLibrary
                 CurrentPlayer.VictoryPoint += 2;
 
             CurrentPlayer.HasResolveDice = false;
-            CurrentPlayer.NbLancer = 3;
+            CurrentPlayer.NbLancer = CurrentPlayer.NbLancerMax;
             EndOfTurn = false;
             CountAnwser = 0;
             CountAnwserStandbyFor = 0;

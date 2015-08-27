@@ -13,6 +13,7 @@ namespace KingLibrary
         public int Energy { get; set; }
         public int VictoryPoint { get; set; }
         public int Hp { get; set; }
+        public int HpMax { get; set; }
         public LocationEnum Location { get {
                 if (Hp == 0)
                     return Location = LocationEnum.CIMETARY_CESI;
@@ -27,6 +28,9 @@ namespace KingLibrary
         public DateTime LastResponse { get; set; }
         public string IdConnection;
         public int NbLancer { get; set; }
+        public int NbLancerMax { get; set; }
+        public int DicesMax { get; set; }
+        
         public List<Dice> Dices { get; set; }
         public List<Dice> SelectedDices = new List<Dice>();
         public bool HasResolveDice;
@@ -40,12 +44,13 @@ namespace KingLibrary
             Energy = 0;
             VictoryPoint = 0;
             Hp = 2;
+            HpMax = 10;
             Location = LocationEnum.OUT_CESI;
         }
         public void ThrowDices()
         {
             Dices = new List<Dice>();
-            for (int i = 0; i<(6-SelectedDices.Count); i++)
+            for (int i = 0; i<(DicesMax-SelectedDices.Count); i++)
             {
                 Dices.Add(new Dice());
             }
@@ -79,12 +84,42 @@ namespace KingLibrary
 
         public void Soingner(int soin)
         {
-            this.Hp = (this.Hp + soin) >= 10 ? 10 : this.Hp + soin;
+            this.Hp = (this.Hp + soin) >= HpMax ? HpMax : this.Hp + soin;
         }
 
         public void PrendreDegats(int point)
         {
             this.Hp = (this.Hp - point) <= 0 ? 0 : this.Hp - point;
+        }
+
+        public void ImpactHp(int point)
+        {
+            this.Hp = (this.Hp + point) <= 0 ? 0 : this.Hp + point >= HpMax ? HpMax : this.Hp + point;
+        }
+
+        public void ImpactEnergy(int point)
+        {
+            this.Energy = (this.Energy + point) <= 0 ? 0 : this.Energy + point;
+        }
+
+        public void ImpactVp(int point)
+        {
+            this.VictoryPoint = (this.VictoryPoint + point) <= 0 ? 0 : this.VictoryPoint + point >= 20 ? VictoryPoint : this.VictoryPoint + point;
+        }
+
+        public void ImpactMaxHp(int point)
+        {
+            this.HpMax = (this.HpMax + point) <= 10 ? 10 : this.HpMax + point;
+        }
+
+        public void ImpactMaxRoll(int point)
+        {
+            this.NbLancerMax = (this.NbLancerMax + point) <= 3 ? 3 : this.NbLancerMax + point;
+        }
+
+        public void ImpactMaxDice(int point)
+        {
+            this.DicesMax = (this.DicesMax + point) <= 0 ? 0 : this.NbLancerMax + point >= 8 ? 8 : this.NbLancerMax + point;
         }
     }
 }

@@ -8,10 +8,15 @@ namespace KingLibrary
 {
     public class Event
     {
-        public Player Player { get; set; }
         public EventEnum Action { get; set; }
-        public int Amount { get; set; }
+        public List<Card> Cards { get; set; }
 
-
+        public void RaiseEvents()
+        {
+            foreach(Card card in Cards)
+            {
+                card.ExecuteActions();
+            }
+        }
     }
 }
