@@ -59,7 +59,7 @@
                     name: "messages",
                     compiledTemplate: undefined,
                     parentDomElement: "#footer",
-                    //onChangeAttribute: "NbRound"
+                    onChangeAttribute: "NbRound"
                 }
             ];
 
@@ -152,13 +152,17 @@
             };
 
             gameHubClient.client.askPlayer = function () {
-                $('.modal').modal({ show: true, backdrop: 'static' });
+                $('#modal--kickass').modal({ show: true, backdrop: 'static' });
             };
 
-            $('body').delegate('.modal button', 'click', function (e) {
+            $('body').delegate('#modal--kickass button', 'click', function (e) {
                 gameHubClient.server.leaveTokyo($(this).hasClass('btn-primary'));
                 $('.modal').modal('hide')
-            })
+            });
+
+            $('body').delegate('.action__cart', 'click', function (e) {
+                $('#modal--shopcart').modal({ show: true, backdrop: 'static' });
+            });
 
             //console test
             //var updateBoard = gameHubClient.client.updateBoard;
@@ -182,6 +186,15 @@
             $('body').delegate(".action__jouer", "click", function (e) {
                 gameHubClient.server.playerRollDices();
                 console.log(gameHubClient.server);
+
+            });
+
+            $('body').delegate(".BuyCard", "click", function (e) {
+                var result = gameHubClient.server.buyCard($(this).data("cardname"));
+                gameHubClient.server.refreshBoard();
+                if (!result) {
+                    alert("Vous ne pouvez pas acheter cette carte.")
+                }
 
             });
 

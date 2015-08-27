@@ -16,7 +16,9 @@ namespace KingLibrary
         public int HpMax { get; set; }
         public LocationEnum Location { get {
                 if (Hp == 0)
+                {
                     return Location = LocationEnum.CIMETARY_CESI;
+                }
                 else
                     return _location;
             } set {
@@ -36,14 +38,15 @@ namespace KingLibrary
         public bool HasResolveDice;
         public bool KingOfCesi;
         public bool Disconnected = false;
+        public List<Card> MyCards = new List<Card>();
 
         public Player(string pseudo, string idConnection)
         {
             Pseudo = pseudo;
             IdConnection = idConnection;
-            Energy = 0;
+            Energy = 7;
             VictoryPoint = 0;
-            Hp = 2;
+            Hp = 5;
             HpMax = 10;
             Location = LocationEnum.OUT_CESI;
         }
@@ -82,7 +85,7 @@ namespace KingLibrary
             this.VictoryPoint += (dice + value-3);
         }
 
-        public void Soingner(int soin)
+        public void Soigner(int soin)
         {
             this.Hp = (this.Hp + soin) >= HpMax ? HpMax : this.Hp + soin;
         }

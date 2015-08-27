@@ -43,6 +43,7 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Security" />
+    <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -51,13 +52,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CardAction.cs" />
+    <Compile Include="CardFactory.cs" />
     <Compile Include="EventEnum.cs" />
     <Compile Include="Board.cs" />
     <Compile Include="Card.cs" />
     <Compile Include="Dice.cs" />
-    <Compile Include="Event.cs" />
+    <Compile Include="EventManager.cs" />
     <Compile Include="FaceEnum.cs" />
     <Compile Include="KingContext.cs" />
+    <Compile Include="LifeTimeEnum.cs" />
     <Compile Include="LocationEnum.cs" />
     <Compile Include="Marker.cs" />
     <Compile Include="Migrations\201507221322208_GenerationBDD.cs" />

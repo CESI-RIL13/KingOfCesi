@@ -1,4 +1,4 @@
-﻿<div class="modal fade">
+﻿<div id="modal--kickass" class="modal fade">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -11,6 +11,30 @@
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Non</button>
                 <button type="button" class="btn btn-primary">Oui</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<div id="modal--shopcart" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Cartes du deck</h4>
+            </div>
+            <div class="modal-body">
+                <ul class="modal--list-cart">
+                    {{#each CardsShop}}
+                        <li>
+                            <span class="sprite cart cart--{{SafeName}}"></span>
+                            <button type="button" data-cardname="{{SafeName}}" class="BuyCard">Buy</button>
+                        </li>
+                    {{/each}}
+                </ul>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Fermer</button>
             </div>
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->

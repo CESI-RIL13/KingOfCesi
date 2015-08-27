@@ -93,10 +93,67 @@ namespace KingLibrary
 
         public List<Player> SelectPlayerInTokyo(Board board)
         {
-            return board.Players.Where(x => x.Location == LocationEnum.CESI_CITY || x.Location == LocationEnum.CESI_BAY).ToList();
+            return SelectAllPlayers(board).Where(x => x.Location == LocationEnum.CESI_CITY || x.Location == LocationEnum.CESI_BAY).ToList();
         }
 
+        public List<Player> SelectPlayerOutside(Board board)
+        {
+            return SelectAllPlayers(board).Where(x => x.Location != LocationEnum.CESI_CITY && x.Location != LocationEnum.CESI_BAY).ToList();
+        }
 
+        public List<Player> SelectPlayerInOtherSide(Board board)
+        {
+            if (SelectPlayerInTokyo(board).Contains(ParentCard.Owner))
+            {
+                return SelectPlayerOutside(board);
+            }
+            else
+            {
+                return SelectPlayerInTokyo (board);
+            }
+        }
+
+        public List<Player> SelectLeftAndRightPlayers(Board board)
+        {
+            List<Player> allPlayers = SelectAllPlayers(board);
+            int pos = allPlayers.IndexOf(ParentCard.Owner);
+            int posRight;
+            int posLeft;
+
+            if(pos == 0)
+            {
+                posLeft = allPlayers.Count()-1;
+            } else
+            {
+                posLeft = pos - 1;
+            }
+
+            if(pos == allPlayers.Count())
+            {
+                posRight = 0;
+            } else
+            {
+                posRight = pos + 1;
+            }
+
+            if (posLeft == posRight)
+            {
+                return new List<Player> { allPlayers[posLeft] };
+            }
+            return new List<Player> { allPlayers[posLeft], allPlayers[posRight] };
+        }
+
+        public List<Player> SelectAllPlayersExceptMe(Board board)
+        {
+            List<Player> allPlayers = SelectAllPlayers(board);
+            allPlayers.Remove(ParentCard.Owner);
+            return allPlayers;
+        }
+
+        public List<Player> SelectAllPlayers(Board board)
+        {
+            return board.PlayersAlives();
+        }
 
     }
 }

@@ -26,17 +26,18 @@
                 <button class="actions__button action__diceResolve" {{#ifCond CurrentPlayer.SelectedDices.length '<' 6}} disabled {{/ifCond}}>Valider</button>
             </li>
         {{/if}}
-    </ul>
 {{else}}
     <h2 class="action__title">En attente...</h2>
     <ul class="actions">
-        <li>
-            <ul class="dicesSelected">
-                {{#each CurrentPlayer.SelectedDices}}
-                <li class="dice selected sprite {{#getDice ActiveFace}} {{/getDice}}"></li>
-                {{/each}}
-            </ul>
-        </li>
-    </ul>
+    <li>
+        <ul class="dicesSelected">
+            {{#each CurrentPlayer.SelectedDices}}
+            <li class="dice selected sprite {{#getDice ActiveFace}} {{/getDice}}"></li>
+            {{/each}}
+        </ul>
+    </li>
 {{/ifCond}}
-
+    <li class="actions__button">
+        <button class="actions__button action__cart">Voir les cartes</button>
+    </li>
+</ul>

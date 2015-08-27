@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web.Script.Serialization;
 
 namespace KingLibrary
 {
@@ -13,66 +14,68 @@ namespace KingLibrary
         public int NbRound { get; set; }
         public List<Player> Players { get; set; }
         public Player CurrentPlayer { get; set; }
-        public Dictionary<EventEnum, List<Card>> Observers { get; set; }
+        [ScriptIgnore]
         public AskClientDelegate AskClient;
         public bool EndOfTurn { get; set; }
         public int CountAnwser { get; set; }
         public int CountAnwserStandbyFor { get; set; }
         public bool YeahItsFinish;
+        [ScriptIgnore]
+        public EventManager EventManager { get; set; }
+        public List<Card> Deck { get; set; }
+        public List<Card> CardsShop
+        {
+            get
+            {
+                return Deck.Take(3).ToList();
+            }
+        }
 
         public Board()
         {
             NbRound = 0;
             Players = new List<Player>();
-            Observers = new Dictionary<EventEnum, List<Card>>();
             EndOfTurn = false;
             CountAnwser = 0;
             CountAnwserStandbyFor = 0;
+            EventManager = new EventManager();
+            Deck = CardFactory.GenerateDeck();
         }
-
-        public void SubscribeEvent(EventEnum eventParam, Card card)
-        {
-            if (!Observers.ContainsKey(eventParam))
-            {
-                Observers[eventParam] = new List<Card>();
-            }
-            Observers[eventParam].Add(card);
-        }
-
-        public void UnsubscribeEvent(Card card)
-        {
-            foreach (KeyValuePair<EventEnum, List<Card>> keyValuePair in Observers)
-            {
-                keyValuePair.Value.Remove(card);
-            }
-        }
-
         public void NextPlayer()
         {
-            List<Player> playerAliveList = Players.Where(x=> x.Location != LocationEnum.CIMETARY_CESI).ToList();
+            List<Player> playerAliveList = Players.Where(x => x.Location != LocationEnum.CIMETARY_CESI).ToList();
             CurrentPlayer = playerAliveList.IndexOf(CurrentPlayer) + 1 == playerAliveList.Count ? playerAliveList[0] : playerAliveList[playerAliveList.IndexOf(CurrentPlayer) + 1];
-
             CurrentPlayer.Dices = new List<Dice>();
-            
-            if (CurrentPlayer.Location == LocationEnum.CESI_BAY || CurrentPlayer.Location == LocationEnum.CESI_CITY)
+
+            if (CurrentPlayer.Location == LocationEnum.CESI_BAY || CurrentPlayer.Location == LocationEnum.CESI_CITY) {
                 CurrentPlayer.VictoryPoint += 2;
+                EventManager.RaiseEvent(EventEnum.GAIN_VICTORYPOINT, this);
+            }
+
 
             CurrentPlayer.HasResolveDice = false;
             CurrentPlayer.NbLancer = CurrentPlayer.NbLancerMax;
             EndOfTurn = false;
             CountAnwser = 0;
             CountAnwserStandbyFor = 0;
+
+            EventManager.RaiseEvent(EventEnum.BEGIN_ROUND, this);
         }
 
         public void AffectCityPlace(Player player)
         {
             if(Players.Count(x => x.Location == LocationEnum.CESI_CITY) == 0) {
                 player.VictoryPoint++;
+                EventManager.RaiseEvent(EventEnum.GAIN_VICTORYPOINT, this);
                 player.Location = LocationEnum.CESI_CITY;
-            } else if (Players.Count(x => x.Location == LocationEnum.CESI_BAY) == 0 && Players.Count > 4)
+                EventManager.RaiseEvent(EventEnum.ENTER_TOKYO, this);
+            }
+            else if (Players.Count(x => x.Location == LocationEnum.CESI_BAY) == 0 && Players.Count > 4)
             {
                 player.VictoryPoint++;
+                EventManager.RaiseEvent(EventEnum.GAIN_VICTORYPOINT, this);
                 player.Location = LocationEnum.CESI_BAY;
+                EventManager.RaiseEvent(EventEnum.ENTER_TOKYO, this);
             }
         }
 
@@ -94,9 +97,15 @@ namespace KingLibrary
             int trois = CurrentPlayer.SelectedDices.Count(x => x.ActiveFace == FaceEnum.THREE);
             
             CurrentPlayer.Energy += energie;
+            if(energie > 0)
+                EventManager.RaiseEvent(EventEnum.GAIN_ENERGY, this);
 
-            if(CurrentPlayer.Location == LocationEnum.OUT_CESI)
-                CurrentPlayer.Soingner(coeur);
+
+            if (CurrentPlayer.Location == LocationEnum.OUT_CESI)
+            {
+                CurrentPlayer.Soigner(coeur);
+                EventManager.RaiseEvent(EventEnum.GAIN_HP, this);
+            }
             
             if (griffe > 0)
             {
@@ -105,6 +114,11 @@ namespace KingLibrary
                     foreach (Player p in Players.Where(x=> x.Location == LocationEnum.OUT_CESI))
                     {
                         p.PrendreDegats(griffe);
+                        if(p.Hp == 0)
+                        {
+                            EventManager.RaiseEvent(EventEnum.ON_DEATH, this);
+                        }
+                        EventManager.RaiseEvent(EventEnum.HP_LOSS, this);
                     }
                 }
                 else
@@ -112,7 +126,12 @@ namespace KingLibrary
                     foreach (Player p in Players.Where(x => x.Location == LocationEnum.CESI_BAY || x.Location == LocationEnum.CESI_CITY))
                     {
                         p.PrendreDegats(griffe);
-                        if(p.Disconnected == false)
+                        if (p.Hp == 0)
+                        {
+                            EventManager.RaiseEvent(EventEnum.ON_DEATH, this);
+                        }
+                        EventManager.RaiseEvent(EventEnum.HP_LOSS, this);
+                        if (p.Disconnected == false)
                         {
                             AskClient(p);
                         }
@@ -123,20 +142,30 @@ namespace KingLibrary
             if (un >= 3)
             {
                 CurrentPlayer.GainVPWithDices(1, un);
+                EventManager.RaiseEvent(EventEnum.GAIN_VICTORYPOINT, this);
             }
             if (deux >= 3)
             {
                 CurrentPlayer.GainVPWithDices(2, deux);
+                EventManager.RaiseEvent(EventEnum.GAIN_VICTORYPOINT, this);
             }
             if (trois >= 3)
             {
                 CurrentPlayer.GainVPWithDices(3, trois);
+                EventManager.RaiseEvent(EventEnum.GAIN_VICTORYPOINT, this);
             }
-        }  
-        
+
+            EventManager.RaiseEvent(EventEnum.RESOLVE_DICE, this);
+        }
+
         public bool IsDead(Player player)
         {
             return player.Location == LocationEnum.CIMETARY_CESI;
+        }
+
+        public List<Player> PlayersAlives()
+        {
+            return Players.Where(x => x.Location != LocationEnum.CIMETARY_CESI).ToList();
         }
 
         public void CheckWinner()

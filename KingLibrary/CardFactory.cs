@@ -8,8 +8,7 @@ namespace KingLibrary
 {
     public class CardFactory
     {
-        public List<Card> Deck { get; set; }
-        public CardFactory()
+        public static List<Card> GenerateDeck()
         {
             List<Card> cards = new List<Card>();
 
@@ -81,20 +80,26 @@ namespace KingLibrary
 
             cards.Add(raffinerieDeGaz);
 
-            CardShuffle(cards);
+             return CardShuffle(cards);
         }
 
-        public void CardShuffle(List<Card> Cards)
+        public static List<Card> CardShuffle(List<Card> Cards)
         {
+            List<Card> Deck = new List<Card>();
+            for(int i = 0; i< Cards.Count; i++)
+            {
+                Deck.Add(null);
+            }
             Random random = new Random();
             foreach(Card c in Cards)
             {
                 int randomValue = random.Next(0, Cards.Count);
-                while(Deck[randomValue] != null) {
+                while(Deck.ElementAtOrDefault(randomValue) != null) {
                     randomValue = random.Next(0, Cards.Count);
                 }
                 Deck[randomValue] = c;
             }
+            return Deck;
         }
     }
 }

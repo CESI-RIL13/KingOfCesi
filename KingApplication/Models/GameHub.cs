@@ -82,8 +82,11 @@ namespace WebApplication1.Models
 
         public override Task OnDisconnected(bool stopCalled)
         {
-            Player p = Game.KingBoard.Players.First(x => x.IdConnection == Context.ConnectionId);
-            p.Disconnected = true;
+            Player p = Game.KingBoard.Players.FirstOrDefault(x => x.IdConnection == Context.ConnectionId);
+            if (p != null)
+            {
+                p.Disconnected = true;
+            }
             Game.UpdateBoard();
             Game.CountPlayers();
             if (Game.KingBoard.Players.Count <= 1)
@@ -118,6 +121,7 @@ namespace WebApplication1.Models
 
                 Game.KingBoard.NextPlayer();
                 Game.KingBoard.NbRound++;
+                Game.KingBoard.EventManager.RaiseEvent(EventEnum.END_ROUND, Game.KingBoard);
                 Game.UpdateBoard();
             }
         }
@@ -127,6 +131,7 @@ namespace WebApplication1.Models
             if (CheckCurrentPlayer())
             {
                 Game.KingBoard.CurrentPlayer.ThrowDices();
+                Game.KingBoard.EventManager.RaiseEvent(EventEnum.ROLL, Game.KingBoard);
                 Game.UpdateBoard();
             }
         }
@@ -136,6 +141,7 @@ namespace WebApplication1.Models
             if (CheckCurrentPlayer())
             {
                 Game.KingBoard.CurrentPlayer.SelectDice(position);
+                Game.KingBoard.EventManager.RaiseEvent(EventEnum.KEEP_DICE, Game.KingBoard);
                 Game.UpdateBoard();
             }
         }
@@ -160,10 +166,10 @@ namespace WebApplication1.Models
             Game.KingBoard.CountAnwser++;
             if (answer && p != null)
             {
-               
+                Game.KingBoard.EventManager.RaiseEvent(EventEnum.LEAVE_TOKYO,Game.KingBoard);
                 p.Location = LocationEnum.OUT_CESI;
 
-                if (Game.KingBoard.CurrentPlayer.Location != LocationEnum.CESI_CITY)
+                if (Game.KingBoard.CurrentPlayer.Location != LocationEnum.CESI_CITY && Game.KingBoard.CurrentPlayer.Location != LocationEnum.CESI_BAY)
                 { 
                     Game.KingBoard.AffectCityPlace(Game.KingBoard.CurrentPlayer);
                 }
@@ -172,6 +178,31 @@ namespace WebApplication1.Models
             {
                 Game.KingBoard.EndOfTurn = true;
             }
+            Game.UpdateBoard();
+        }
+
+        public bool BuyCard(string cardName)
+        {
+            if(CheckCurrentPlayer())
+            {
+                Card card = Game.KingBoard.Deck.FirstOrDefault(x => x.SafeName == cardName);
+                if(card != null)
+                {
+                    if(card.Cost <= Game.KingBoard.CurrentPlayer.Energy)
+                    {
+                        card.Owner = Game.KingBoard.CurrentPlayer;
+                        Game.KingBoard.CurrentPlayer.MyCards.Add(card);
+                        Game.KingBoard.CurrentPlayer.ImpactEnergy(-(card.Cost));
+                        Game.KingBoard.Deck.Remove(card);
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+
+        public void RefreshBoard()
+        {
             Game.UpdateBoard();
         }
     }
