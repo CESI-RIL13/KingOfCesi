@@ -35,14 +35,6 @@ namespace WebApplication1.Models
             clients.updateBoard(sJSON);
         }
 
-        public static void AskClient(Player player)
-        {
-            if (player != null && player.Location != LocationEnum.CIMETARY_CESI)
-            {
-                Game.KingBoard.CountAnwserStandbyFor++;
-                GameHub.Instance._context.Clients.Client(player.IdConnection).askPlayer();
-            }
-        }
 
         public static void CountPlayers()
         {

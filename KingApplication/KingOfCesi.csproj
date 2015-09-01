@@ -254,6 +254,7 @@
     <Content Include="Views\Game\Loading.cshtml" />
     <Content Include="Views\Game\Win.cshtml" />
     <Content Include="Views\Game\Loose.cshtml" />
+    <Content Include="Views\Game\Lobby.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

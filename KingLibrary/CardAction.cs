@@ -32,10 +32,7 @@ namespace KingLibrary
 
         public void Execute(Board board)
         {
-            foreach (Player p in ImpactedPlayers(board))
-            {
-                EffectList(Amount, board);
-            }
+            EffectList(Amount, board);
         }
 
         public void ImpactHp(int amount, Board board)
@@ -50,7 +47,7 @@ namespace KingLibrary
         {
             foreach (Player p in ImpactedPlayers(board))
             {
-                p.ImpactHp(amount);
+                p.ImpactVp(amount);
             }
         }
 

@@ -72,7 +72,22 @@
 
             var displayTemplate = function (templateElement, board) {
                 var html = templateElement.compiledTemplate(board);
+
                 $(templateElement.parentDomElement).html(html);
+
+                var modalDisplayed = $(".modal.in");
+                console.log("modal displayed");
+                console.log(modalDisplayed);
+                /*var modalToRemove = undefined;
+                if (modalDisplayed !== undefined) {
+                    $(".modal").each(function () {
+                        if ($(this).attr('id') == modalDisplayed.attr('id') && !$(this).hasClass("in")) {
+                            $(this).remove();
+                        }
+                    });
+                }*/
+                modalDisplayed.remove();
+                
             };
 
             var recursiveObjectDiff = function (parent, object) {
@@ -157,7 +172,11 @@
 
             $('body').delegate('#modal--kickass button', 'click', function (e) {
                 gameHubClient.server.leaveTokyo($(this).hasClass('btn-primary'));
-                $('.modal').modal('hide')
+
+
+                $('#modal--kickass').modal('hide');
+                $('body').removeClass('modal-open');
+                $('.modal-backdrop').remove();
             });
 
             $('body').delegate('.action__cart', 'click', function (e) {
@@ -179,9 +198,19 @@
                 console.log(jsonBoard)
                 if (jsonBoard.CurrentPlayer.SelectedDices.length < 6)
                     return;
-                console.log('resolve dice!')
                 gameHubClient.server.diceResolve();
             });
+
+            gameHubClient.client.waitForTokyoAnswer = function () {
+                $(".action__diceResolve").hide();
+                $(".action__title").html("En attente des joueurs de Tokyo");
+            }
+
+
+            /*gameHubClient.client.tokyoAnswerReceived = function () {
+                $(".action__diceResolve").hide();
+                $(".action__title").html("C'est à vous de jouer");
+            }*/
 
             $('body').delegate(".action__jouer", "click", function (e) {
                 gameHubClient.server.playerRollDices();
@@ -190,13 +219,17 @@
             });
 
             $('body').delegate(".BuyCard", "click", function (e) {
-                var result = gameHubClient.server.buyCard($(this).data("cardname"));
-                gameHubClient.server.refreshBoard();
+                gameHubClient.server.buyCard($(this).data("cardname"));                
+            });
+            gameHubClient.client.resultBuyCard = function(result){
                 if (!result) {
                     alert("Vous ne pouvez pas acheter cette carte.")
                 }
-
-            });
+                $('#modal--shopcart').modal('hide');
+                $('body').removeClass('modal-open');
+                $('.modal-backdrop').remove();
+                gameHubClient.server.refreshBoard();
+            }
 
             $('body').delegate(".dices .dice", "click", function (e) {
                 gameHubClient.server.selectDice($(this).index());
@@ -207,6 +240,10 @@
                 gameHubClient.server.unselectDice($(this).index());
                 console.log(gameHubClient.server);
             });
+
+            gameHubClient.client.redirectToLobby = function () {
+                window.location.url = "/Game/Lobby";
+            }
 
             var checkVictory = function () {
                 if (!jsonBoard.YeahItsFinish)

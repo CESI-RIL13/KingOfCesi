@@ -18,6 +18,7 @@ namespace KingLibrary
             cardAction.TypeEvent = EventEnum.CARD_BOUGHT;
             cardAction.LifeTime = LifeTimeEnum.ONE_SHOT;
             cardAction.EffectList += cardAction.ImpactVP;
+            cardAction.ImpactedPlayers += cardAction.SelectCurrentPlayer;
             cardAction.Amount = 2;
             tramway.CardActions.Add(cardAction);
 
@@ -30,12 +31,14 @@ namespace KingLibrary
             cardAction.LifeTime = LifeTimeEnum.ONE_SHOT;
             cardAction.EffectList += cardAction.ImpactVP;
             cardAction.Amount = 4;
+            cardAction.ImpactedPlayers += cardAction.SelectCurrentPlayer;
             tank.CardActions.Add(cardAction);
             cardAction = new CardAction();
             cardAction.TypeEvent = EventEnum.CARD_BOUGHT;
             cardAction.LifeTime = LifeTimeEnum.ONE_SHOT;
             cardAction.EffectList += cardAction.ImpactHp;
             cardAction.Amount = -3;
+            cardAction.ImpactedPlayers += cardAction.SelectCurrentPlayer;
             tank.CardActions.Add(cardAction);
 
             cards.Add(tank);
@@ -59,6 +62,7 @@ namespace KingLibrary
             cardAction.LifeTime = LifeTimeEnum.ONE_SHOT;
             cardAction.EffectList += cardAction.ImpactVP;
             cardAction.Amount = 1;
+            cardAction.ImpactedPlayers += cardAction.SelectCurrentPlayer;
             cafeDuCoin.CardActions.Add(cardAction);
 
             cards.Add(cafeDuCoin);

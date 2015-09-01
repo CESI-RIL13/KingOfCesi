@@ -7,7 +7,7 @@ using System.Web.Script.Serialization;
 
 namespace KingLibrary
 {
-    public delegate void AskClientDelegate(Player p);
+    public delegate void AskClientDelegate(Player p, string contextConnectionId);
 
     public class Board
     {
@@ -79,7 +79,7 @@ namespace KingLibrary
             }
         }
 
-        public void DiceResolve()
+        public void DiceResolve(string contextConnectionId)
         {
             if (CurrentPlayer.SelectedDices.Count != 6 || CurrentPlayer.HasResolveDice)
             {
@@ -133,7 +133,8 @@ namespace KingLibrary
                         EventManager.RaiseEvent(EventEnum.HP_LOSS, this);
                         if (p.Disconnected == false)
                         {
-                            AskClient(p);
+
+                            AskClient(p, contextConnectionId);
                         }
                     }
                 }

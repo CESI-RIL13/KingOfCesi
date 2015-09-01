@@ -44,10 +44,12 @@ namespace KingLibrary
         {
             Pseudo = pseudo;
             IdConnection = idConnection;
-            Energy = 7;
+            Energy = 0;
             VictoryPoint = 0;
-            Hp = 5;
+            Hp = 10;
             HpMax = 10;
+            DicesMax = 6;
+            NbLancerMax = 3;
             Location = LocationEnum.OUT_CESI;
         }
         public void ThrowDices()
